@@ -6,10 +6,10 @@
   <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white"/>
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"/>
   <br>
-  <img src="https://img.shields.io/github/license/bidzz7/lua-xor-encrypt?style=flat-square"/>
-  <img src="https://img.shields.io/github/stars/bidzz7/lua-xor-encrypt?style=flat-square"/>
-  <img src="https://img.shields.io/github/issues/bidzz7/lua-xor-encrypt?style=flat-square"/>
-  <img src="https://img.shields.io/github/forks/bidzz7/lua-xor-encrypt?style=flat-square"/>
+  <img src="https://img.shields.io/github/license/bidzz-rawr/lua-xor-encrypt?style=flat-square"/>
+  <img src="https://img.shields.io/github/stars/bidzz-rawr/lua-xor-encrypt?style=flat-square"/>
+  <img src="https://img.shields.io/github/issues/bidzz-rawr/lua-xor-encrypt?style=flat-square"/>
+  <img src="https://img.shields.io/github/forks/bidzz-rawr/lua-xor-encrypt?style=flat-square"/>
 </div>
 
 <br>
@@ -44,13 +44,13 @@
 
 ## 🚀 Live Demo
 
-Try it now: [Lua XOR Encrypt Live Demo](https://bidzz7.github.io/lua-xor-encrypt)
+Try it now: [Lua XOR Encrypt Live Demo](https://bidzz-rawr.github.io/lua-xor-encrypt/)
 
 ## 📥 Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/bidzz7/lua-xor-encrypt.git
+git clone https://github.com/bidzz-rawr/lua-xor-encrypt.git
 
 # Navigate to project directory
 cd lua-xor-encrypt
@@ -180,7 +180,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Bidzz Official - [@bidzz7](https://t.me/bidzz7)
 
-Channel Link: [Bidzz Official | Channel](https://t.me/cheatbybidzz)
+Channel- [Bidzz Official 🇮🇩 | Channel](https://t.me/cheatbybidzz)
 
 ## 🌟 Support
 

@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Lua XOR Encrypt</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="css/bulma.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script defer="" src="js/all.js"></script>
     <style>
         :root {
             --primary: #00f7ff;
@@ -176,6 +176,7 @@
             color: var(--text-bright);
         }
 
+        /* Telegram Corner Enhancement */
         .telegram-corner {
             position: fixed;
             top: 0;
@@ -208,6 +209,7 @@
             100% { box-shadow: 0 0 0 0 rgba(100, 255, 218, 0); }
         }
 
+        /* Cyber Lines Animation */
         .cyber-lines {
             position: fixed;
             width: 100%;
@@ -230,27 +232,6 @@
         @keyframes scan {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
-        }
-
-        /* Notifikasi custom */
-        .notification-custom {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            background: var(--card-bg);
-            border: 1px solid var(--accent);
-            border-radius: 10px;
-            color: var(--text-bright);
-            z-index: 1000;
-            opacity: 0;
-            transform: translateX(100%);
-            transition: all 0.3s ease;
-        }
-
-        .notification-custom.show {
-            opacity: 1;
-            transform: translateX(0);
         }
     </style>
 </head>
@@ -343,11 +324,8 @@
         </svg>
     </a>
 
-    <div id="notification" class="notification-custom">
-        <span id="notification-text"></span>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="js/bundle.js"></script>
     <script>
         particlesJS('particles-js', {
             particles: {
@@ -400,144 +378,6 @@
             },
             retina_detect: true
         });
-
-        // Fungsi notifikasi
-        function showNotification(message, isError = false) {
-            const notification = document.getElementById('notification');
-            const notificationText = document.getElementById('notification-text');
-            
-            notification.style.background = isError ? 'rgba(255, 0, 0, 0.2)' : 'rgba(0, 247, 255, 0.2)';
-            notification.style.borderColor = isError ? '#ff0000' : '#00f7ff';
-            notificationText.textContent = message;
-            
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-
-        // Handler untuk file input
-        document.querySelector('.file-input').addEventListener('change', function(e) {
-            const fileName = document.querySelector('#file-name');
-            if (this.files.length > 0) {
-                fileName.textContent = this.files[0].name;
-                showNotification('File selected successfully!');
-            } else {
-                fileName.textContent = 'No file selected.';
-            }
-        });
-
-        // Handler untuk enkripsi
-        document.querySelector('.button.is-link').addEventListener('click', async function() {
-            const fileInput = document.querySelector('#file');
-            const keyInput = document.querySelector('#key');
-            const settings = document.querySelector('#settings');
-
-            if (!fileInput.files.length) {
-                showNotification('Please select a file first.', true);
-                return;
-            }
-
-            if (!keyInput.value) {
-                showNotification('Please enter an encryption key.', true);
-                return;
-            }
-
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-
-            reader.onload = async function(e) {
-                try {
-                    const content = e.target.result;
-                    const encryptedContent = xorEncrypt(content, keyInput.value);
-                    
-                    let finalScript = '';
-                    switch(settings.value) {
-                        case 'gg':
-                            finalScript = `
-                                local function decode(str, key)
-                                    local result = ""
-                                    for i = 1, #str do
-                                        local c = string.byte(str, i)
-                                        local k = string.byte(key, ((i-1) % #key) + 1)
-                                        result = result .. string.char(bit32.bxor(c, k))
-                                    end
-                                    return result
-                                end
-                                
-                                local encrypted = "${encryptedContent}"
-                                local key = "${keyInput.value}"
-                                load(decode(encrypted, key))()
-                            `;
-                            break;
-                        case '51':
-                            finalScript = `
-                                local function decode(str, key)
-                                    local result = ""
-                                    for i = 1, #str do
-                                        local c = string.byte(str, i)
-                                        local k = string.byte(key, ((i-1) % #key) + 1)
-                                        result = result .. string.char(bit.bxor(c, k))
-                                    end
-                                    return result
-                                end
-                                
-                                local encrypted = "${encryptedContent}"
-                                local key = "${keyInput.value}"
-                                loadstring(decode(encrypted, key))()
-                            `;
-                            break;
-                        default:
-                            finalScript = `
-                                local function decode(str, key)
-                                    local result = ""
-                                    for i = 1, #str do
-                                        local c = string.byte(str, i)
-                                        local k = string.byte(key, ((i-1) % #key) + 1)
-                                        result = result .. string.char(bit32.bxor(c, k))
-                                    end
-                                    return result
-                                end
-                                
-                                local encrypted = "${encryptedContent}"
-                                local key = "${keyInput.value}"
-                                load(decode(encrypted, key))()
-                            `;
-                    }
-
-                    const blob = new Blob([finalScript], {type: 'text/plain'});
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `encrypted_${file.name}`;
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-                    
-                    showNotification('File encrypted and downloaded successfully!');
-                } catch (error) {
-                    showNotification('Error encrypting file: ' + error.message, true);
-                }
-            };
-
-            reader.onerror = function() {
-                showNotification('Error reading file!', true);
-            };
-
-            reader.readAsText(file);
-        });
-
-        // Fungsi XOR Encrypt
-        function xorEncrypt(text, key) {
-            let result = '';
-            for (let i = 0; i < text.length; i++) {
-                const c = text.charCodeAt(i);
-                const k = key.charCodeAt(i % key.length);
-                result += String.fromCharCode(c ^ k);
-            }
-            return btoa(result); // Encode as base64
-        }
     </script>
 </body>
 </html>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lua XOR Encrypt</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00f7ff;
+            --secondary: #0066ff;
+            --dark-bg: #020c1b;
+            --card-bg: rgba(2, 12, 27, 0.7);
+            --text-bright: #e6f1ff;
+            --text-light: #8892b0;
+            --accent: #64ffda;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark-bg), #041629);
+            color: var(--text-bright);
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .hero.is-dark {
+            background: transparent;
+            position: relative;
+        }
+
+        .hero-body {
+            background: linear-gradient(180deg, rgba(0,247,255,0.1) 0%, rgba(0,102,255,0.05) 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+        }
+
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0,247,255,0.5);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        .developer-credit {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--accent);
+            text-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+            z-index: 100;
+            background: rgba(2, 12, 27, 0.8);
+            padding: 10px 25px;
+            border-radius: 20px;
+            border: 1px solid var(--accent);
+            animation: pulse 2s infinite;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .form {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .form:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+        }
+
+        .input, .select select {
+            background: rgba(23, 42, 69, 0.7);
+            border: 2px solid var(--accent);
+            color: var(--text-bright);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input:focus, .select select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0,247,255,0.3);
+        }
+
+        .label {
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .help {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .button.is-link {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            padding: 1.5rem 3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .button.is-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .button.is-link:hover::before {
+            left: 100%;
+        }
+
+        .button.is-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0,247,255,0.5);
+        }
+
+        .file-cta {
+            background: rgba(23, 42, 69, 0.7);
+            border: 2px solid var(--accent);
+            color: var(--text-bright);
+        }
+
+        .file-name {
+            background: rgba(23, 42, 69, 0.7);
+            border: 2px solid var(--accent);
+            color: var(--text-bright);
+        }
+
+        .telegram-corner {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 120px;
+            height: 120px;
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        .telegram-corner svg {
+            fill: var(--primary);
+            filter: drop-shadow(0 0 10px rgba(0,247,255,0.5));
+            transition: all 0.3s ease;
+        }
+
+        .telegram-corner:hover svg {
+            fill: var(--accent);
+            transform: scale(1.1);
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 20px rgba(0,247,255,0.5); }
+            100% { text-shadow: 0 0 40px rgba(0,247,255,0.8), 0 0 80px rgba(0,102,255,0.3); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(100, 255, 218, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(100, 255, 218, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(100, 255, 218, 0); }
+        }
+
+        .cyber-lines {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .cyber-lines::before, .cyber-lines::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        .cyber-lines::before { top: 0; }
+        .cyber-lines::after { bottom: 0; }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Notifikasi custom */
+        .notification-custom {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            color: var(--text-bright);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .notification-custom.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="cyber-lines"></div>
+    <div id="particles-js"></div>
+    <section class="hero is-dark is-medium">
+        <div class="hero-body">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-full">
+                        <h1 class="title">Lua XOR Encrypt</h1>
+                        <p class="subtitle" style="color: var(--text-light); font-size: 1.2rem;">
+                            Advanced encryption system using XOR algorithm for secure script protection
+                            
+                            by Bidzz Official 🇮🇩 
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-two-thirds-tablet is-half-desktop">
+                    <div class="form">
+                        <div class="field">
+                            <label class="label">Lua File</label>
+                            <div class="control">
+                                <div class="file has-name is-fullwidth">
+                                    <label class="file-label">
+                                        <input class="file-input" type="file" accept=".lua,.txt" id="file">
+                                        <span class="file-cta">
+                                            <span class="file-icon">
+                                                <i class="fas fa-upload"></i>
+                                            </span>
+                                            <span class="file-label">Select File…</span>
+                                        </span>
+                                        <span class="file-name" id="file-name">No file selected.</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="help">Secure local file processing - No server uploads required</p>
+                        </div>
+                        <div class="field">
+                            <label class="label">Encryption Key</label>
+                            <div class="control">
+                                <input class="input" type="text" id="key" placeholder="Enter your secure encryption key">
+                            </div>
+                            <p class="help">Your encryption key for securing the file</p>
+                        </div>
+                        <div class="field">
+                            <label class="label">Configuration</label>
+                            <div class="control">
+                                <div class="select is-fullwidth">
+                                    <select id="settings">
+                                        <option value="gg">Game Guardian script (Lua 5.2 load)</option>
+                                        <option value="51">Logitech macros (Lua 5.1 loadstring)</option>
+                                        <option value="52">Common Lua 5.2</option>
+                                        <option value="51">Common Lua 5.1</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <p class="help">Select your preferred configuration template</p>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <button class="button is-link is-fullwidth">
+                                    <span class="icon">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                    <span>ENCRYPT FILE</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="developer-credit">
+        Bidzz Official 🇮🇩
+    </div>
+
+    <a href="https://t.me/bidzz7" class="telegram-corner" aria-label="Contact on Telegram">
+        <svg width="120" height="120" viewBox="0 0 240 240">
+            <path d="M66.964 134.874s-32.08-10.062-51.344-16.002c-17.542-6.693-1.57-14.928 6.015-17.59 7.585-2.66 186.38-71.948 186.38-71.948s23.106-9.937 21.265 14.19c-.831 11.087-10.173 49.854-16.016 86.832-4.466 28.187-27.226 7.614-35.033-5.839-7.807-13.453-29.399-51.13-29.399-51.13s-10.914-13.674-10.914-1.801c0 5.177.324 61.026.324 61.026s-.456 12.621-4.049 14.703c-6.012 3.497-14.96-9.348-14.96-9.348L66.964 134.874z"/>
+        </svg>
+    </a>
+
+    <div id="notification" class="notification-custom">
+        <span id="notification-text"></span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 100, density: { enable: true, value_area: 800 } },
+                color: { value: "#00f7ff" },
+                shape: {
+                    type: "circle",
+                    stroke: { width: 0, color: "#000000" },
+                    polygon: { nb_sides: 5 }
+                },
+                opacity: {
+                    value: 0.5,
+                    random: true,
+                    anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    anim: { enable: true, speed: 2, size_min: 0.1, sync: false }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#00f7ff",
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false,
+                    attract: { enable: true, rotateX: 600, rotateY: 1200 }
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                },
+                modes: {
+                    repulse: { distance: 100, duration: 0.4 },
+                    push: { particles_nb: 4 }
+                }
+            },
+            retina_detect: true
+        });
+
+        // Fungsi notifikasi
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            
+            notification.style.background = isError ? 'rgba(255, 0, 0, 0.2)' : 'rgba(0, 247, 255, 0.2)';
+            notification.style.borderColor = isError ? '#ff0000' : '#00f7ff';
+            notificationText.textContent = message;
+            
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Handler untuk file input
+        document.querySelector('.file-input').addEventListener('change', function(e) {
+            const fileName = document.querySelector('#file-name');
+            if (this.files.length > 0) {
+                fileName.textContent = this.files[0].name;
+                showNotification('File selected successfully!');
+            } else {
+                fileName.textContent = 'No file selected.';
+            }
+        });
+
+        // Handler untuk enkripsi
+        document.querySelector('.button.is-link').addEventListener('click', async function() {
+            const fileInput = document.querySelector('#file');
+            const keyInput = document.querySelector('#key');
+            const settings = document.querySelector('#settings');
+
+            if (!fileInput.files.length) {
+                showNotification('Please select a file first.', true);
+                return;
+            }
+
+            if (!keyInput.value) {
+                showNotification('Please enter an encryption key.', true);
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(e) {
+                try {
+                    const content = e.target.result;
+                    const encryptedContent = xorEncrypt(content, keyInput.value);
+                    
+                    let finalScript = '';
+                    switch(settings.value) {
+                        case 'gg':
+                            finalScript = `
+                                local function decode(str, key)
+                                    local result = ""
+                                    for i = 1, #str do
+                                        local c = string.byte(str, i)
+                                        local k = string.byte(key, ((i-1) % #key) + 1)
+                                        result = result .. string.char(bit32.bxor(c, k))
+                                    end
+                                    return result
+                                end
+                                
+                                local encrypted = "${encryptedContent}"
+                                local key = "${keyInput.value}"
+                                load(decode(encrypted, key))()
+                            `;
+                            break;
+                        case '51':
+                            finalScript = `
+                                local function decode(str, key)
+                                    local result = ""
+                                    for i = 1, #str do
+                                        local c = string.byte(str, i)
+                                        local k = string.byte(key, ((i-1) % #key) + 1)
+                                        result = result .. string.char(bit.bxor(c, k))
+                                    end
+                                    return result
+                                end
+                                
+                                local encrypted = "${encryptedContent}"
+                                local key = "${keyInput.value}"
+                                loadstring(decode(encrypted, key))()
+                            `;
+                            break;
+                        default:
+                            finalScript = `
+                                local function decode(str, key)
+                                    local result = ""
+                                    for i = 1, #str do
+                                        local c = string.byte(str, i)
+                                        local k = string.byte(key, ((i-1) % #key) + 1)
+                                        result = result .. string.char(bit32.bxor(c, k))
+                                    end
+                                    return result
+                                end
+                                
+                                local encrypted = "${encryptedContent}"
+                                local key = "${keyInput.value}"
+                                load(decode(encrypted, key))()
+                            `;
+                    }
+
+                    const blob = new Blob([finalScript], {type: 'text/plain'});
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `encrypted_${file.name}`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    showNotification('File encrypted and downloaded successfully!');
+                } catch (error) {
+                    showNotification('Error encrypting file: ' + error.message, true);
+                }
+            };
+
+            reader.onerror = function() {
+                showNotification('Error reading file!', true);
+            };
+
+            reader.readAsText(file);
+        });
+
+        // Fungsi XOR Encrypt
+        function xorEncrypt(text, key) {
+            let result = '';
+            for (let i = 0; i < text.length; i++) {
+                const c = text.charCodeAt(i);
+                const k = key.charCodeAt(i % key.length);
+                result += String.fromCharCode(c ^ k);
+            }
+            return btoa(result); // Encode as base64
+        }
+    </script>
+</body>
+</html>
